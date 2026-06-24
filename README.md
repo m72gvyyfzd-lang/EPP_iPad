@@ -1,20 +1,19 @@
-# EPP v0.3 iPad Prototype
+# Elbe Passage Plan – Prototyp v0.4
 
-Low-/Mid-Fidelity UX-Prototyp für den Elbe Passage Plan.
+Statischer iPad-first Web-App-Prototyp für GitHub Pages.
 
 ## Enthalten
-- Start/Login mit Hell-/Nachtmodus
-- Modulnavigation mit dynamischer Sichtbarkeit
-- Statuspanel rechts neben der Navigation
-- Grundeinstellung V2
-- Schiffsdaten
-- Gezeiten mit Wasserstandsdropdowns
-- Passagefenster als Zeitstrahl
-- horizontale Master-Elbegrafik
-- Routenoptionen als erste grafische Skizze
-- Hamburg Anlaufbedingungen mit schematischer Tidekurve
-- Begegnung mit Master-Elbegrafik
-- Print-out-Vorschau
+
+- Kreisnavigation mit EPP im Zentrum
+- Instrumenten-Statuspanel
+- Grunddaten mit integrierten Schiffsdaten
+- Gezeitenkarten für HEL, CUX, BRB, GLÜ, HH
+- Passagefenster aus v0.3 beibehalten
+- Routenoptionen mit neuer Master-Elbe, Speed-Limit-Balken, Ebene 1/2 gleichzeitig sichtbar
+- Hamburg Anlaufbedingungen mit Fenstern im Vordergrund und Tidekurve im Hintergrund
+- Begegnung mit zweifarbiger Elbe und Meeting Point
+- Print-out Platzhalter mit Excel-Layout-Strategie
 
 ## Hinweis
-Dies ist ein UX-Prototyp und keine operative oder fachlich validierte Berechnungsengine.
+
+Dies ist ein UI-Prototyp. Die operative Berechnungslogik ist noch nicht implementiert.

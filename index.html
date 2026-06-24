@@ -3,226 +3,134 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Elbe Passage Plan – Prototyp v0.3</title>
-  <style>
-    :root{
-      --bg:#eef3f7; --panel:#ffffff; --panel2:#f7fafc; --ink:#102333; --muted:#607283;
-      --navy:#0f3558; --navy2:#17496f; --line:#d9e3ec; --ok:#23855c; --info:#52728b; --warn:#c07919; --alarm:#b33434;
-      --shadow: 0 12px 30px rgba(15,53,88,.13); --radius:20px;
-    }
-    [data-theme="dark"]{
-      --bg:#07131e; --panel:#0d2233; --panel2:#0a1a28; --ink:#e8f1f8; --muted:#9eb0bf;
-      --navy:#07131e; --navy2:#12324c; --line:#234459; --ok:#68b890; --info:#8aa7bc; --warn:#d39b48; --alarm:#e07474;
-      --shadow: 0 12px 30px rgba(0,0,0,.35);
-    }
-    *{box-sizing:border-box}
-    body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;background:var(--bg);color:var(--ink)}
-    button,input,select{font:inherit} button{cursor:pointer}
-    .login{min-height:100vh;display:grid;place-items:center;background:radial-gradient(circle at center, rgba(23,73,111,.15), transparent 35%),var(--bg);position:relative;overflow:hidden}
-    .mark{position:absolute;font-size:38vw;opacity:.055;transform:rotate(-12deg);font-weight:900;color:var(--navy)}
-    .login-card{position:relative;width:min(520px,92vw);padding:38px;border-radius:28px;background:var(--panel);box-shadow:var(--shadow);text-align:center;border:1px solid var(--line)}
-    .login-card h1{font-size:42px;letter-spacing:.08em;margin:14px 0 6px}.login-card p{color:var(--muted);font-size:18px}.badge{display:inline-block;padding:8px 13px;border-radius:99px;background:var(--panel2);color:var(--navy2);font-weight:700}.login-grid{display:grid;gap:14px;text-align:left;margin-top:22px}
-    label{font-weight:700;color:var(--muted);font-size:13px;display:grid;gap:7px} input,select{width:100%;border:1px solid var(--line);border-radius:13px;padding:12px 13px;background:var(--panel2);color:var(--ink);outline:none} input:focus,select:focus{border-color:var(--navy2)}
-    .primary{border:0;border-radius:14px;background:var(--navy2);color:#fff;font-weight:800;padding:13px 18px}.ghost{border:1px solid var(--line);background:var(--panel2);color:var(--ink);border-radius:13px;padding:10px 14px;font-weight:700}
-    .app{min-height:100vh}.topbar{position:sticky;top:0;z-index:10;background:var(--navy);color:#fff;padding:14px 22px;display:flex;align-items:center;justify-content:space-between;box-shadow:0 4px 18px rgba(0,0,0,.18)}
-    .topbar .title{font-size:18px;font-weight:900;letter-spacing:.03em}.topbar small{opacity:.75;margin-left:12px}.shell{max-width:1280px;margin:0 auto;padding:18px}
-    .nav-row{display:grid;grid-template-columns:1fr 300px;gap:16px;align-items:stretch;margin-bottom:16px}.tabs{display:flex;gap:8px;flex-wrap:wrap;align-content:flex-start;background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:12px;box-shadow:var(--shadow)}
-    .tab{border:1px solid var(--line);background:var(--panel2);color:var(--ink);border-radius:14px;padding:10px 12px;font-weight:800}.tab.active{background:var(--navy2);border-color:var(--navy2);color:#fff}.tab.hidden{display:none}.tab .s{margin-right:6px}
-    .status{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:14px 16px;box-shadow:var(--shadow);text-align:right;min-height:146px}.status .place{font-size:15px;color:var(--muted);font-weight:900}.status .time{font-size:36px;line-height:1;font-weight:950;letter-spacing:-.03em;margin:5px 0}.status .mode{font-size:12px;letter-spacing:.12em;color:var(--muted);font-weight:900}.status .overall{display:inline-block;margin:8px 0;padding:6px 10px;border-radius:999px;font-weight:900;font-size:12px}.overall.ok{background:rgba(35,133,92,.12);color:var(--ok)}.overall.warn{background:rgba(192,121,25,.16);color:var(--warn)}.overall.alarm{background:rgba(179,52,52,.16);color:var(--alarm)}
-    .checks{display:flex;flex-wrap:wrap;gap:6px;justify-content:flex-end}.chip{display:inline-flex;align-items:center;gap:5px;padding:5px 8px;border-radius:999px;background:var(--panel2);border:1px solid var(--line);font-size:12px;font-weight:800}.ok{color:var(--ok)}.info{color:var(--info)}.warn{color:var(--warn)}.alarm{color:var(--alarm)}
-    .view{display:none}.view.active{display:block}.card{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:18px;margin:0 0 16px;box-shadow:var(--shadow)}.card h2{margin:0 0 15px;font-size:22px}.card h3{margin:18px 0 10px;font-size:16px;color:var(--navy2)}
-    .frame-grid{display:grid;grid-template-columns:120px 1.2fr .9fr 210px;gap:14px;align-items:stretch}.method-buttons{display:grid;gap:10px;align-content:start}.method-buttons button{border:1px solid var(--line);border-radius:16px;background:var(--panel2);padding:18px 8px;font-weight:950;font-size:19px}.method-buttons button.active{background:var(--navy2);color:white;border-color:var(--navy2)}
-    .info-box,.direction-box,.side-box{background:var(--panel2);border:1px solid var(--line);border-radius:18px;padding:18px}.info-box{display:flex;align-items:center;justify-content:center;text-align:center;line-height:1.5;font-weight:700}.direction-box{display:grid;place-items:center}.arrow-sketch{font-weight:900;color:var(--navy2);font-size:18px;text-align:center;line-height:1.6}.side-box{display:grid;align-content:space-between;gap:16px}.side-box .time-input input{font-size:24px;font-weight:900;text-align:center}.side-box .dest select{font-weight:800}
-    .ship-grid{display:grid;grid-template-columns:1.2fr 1fr repeat(4,.8fr);gap:12px}.validation{margin-top:12px;padding:10px 12px;border-radius:14px;background:var(--panel2);border:1px solid var(--line);font-weight:800}
-    .two{display:grid;grid-template-columns:1fr 1fr;gap:14px}.three{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}.five{display:grid;grid-template-columns:repeat(5,1fr);gap:12px}.small-note{font-size:12px;color:var(--muted);margin-top:8px}
-    table{width:100%;border-collapse:collapse;border-radius:16px;overflow:hidden}th,td{padding:10px;border-bottom:1px solid var(--line);text-align:left}th{background:var(--panel2);color:var(--muted);font-size:12px;text-transform:uppercase;letter-spacing:.06em}td input{padding:8px;border-radius:10px} .tablewrap{overflow:auto;border:1px solid var(--line);border-radius:16px}
-    .passage-card{text-align:center;padding:10px}.passage-title{font-size:30px;font-weight:950}.passage-sub{color:var(--muted);font-weight:800;margin:5px 0 22px}.timeline{position:relative;height:130px;margin:18px 26px 10px}.timeline .bar{position:absolute;left:9%;right:9%;top:54px;height:8px;border-radius:999px;background:linear-gradient(90deg,var(--ok),var(--ok));box-shadow:inset 0 0 0 1px rgba(0,0,0,.1)}.tick{position:absolute;top:34px;transform:translateX(-50%);font-weight:900}.tick:after{content:"";display:block;margin:8px auto 0;width:3px;height:30px;background:var(--ink);opacity:.45}.tick.start{left:9%}.tick.end{left:91%}.eta-marker{position:absolute;top:12px;transform:translateX(-50%);font-weight:950;color:var(--ok)}.eta-marker:after{content:"▲";display:block;font-size:28px;line-height:1}.eta-marker.alarm{color:var(--alarm)}.passage-status{font-size:18px;font-weight:950;margin-top:8px}
-    .river-card{padding:22px 14px}.elbe{position:relative;height:210px;margin:18px 4px;background:var(--panel2);border:1px solid var(--line);border-radius:20px;padding:28px 24px 20px}.elbe-line{position:absolute;left:45px;right:45px;top:92px;height:8px;border-radius:999px;background:var(--navy2);opacity:.85}.station{position:absolute;top:72px;transform:translateX(-50%);text-align:center;font-size:12px;font-weight:900;white-space:nowrap}.station:before{content:"";display:block;margin:0 auto 7px;width:16px;height:16px;border-radius:50%;background:var(--panel);border:4px solid var(--navy2)}.pilot-change{position:absolute;top:54px;transform:translateX(-50%);width:112px;text-align:center;color:var(--warn);font-weight:950;font-size:11px;line-height:1.1}.pilot-change:before,.pilot-change:after{content:"";position:absolute;top:34px;width:4px;height:54px;background:var(--warn);border-radius:999px}.pilot-change:before{left:21px}.pilot-change:after{right:21px}.zone{position:absolute;top:118px;height:34px;border-radius:13px;background:rgba(82,114,139,.14);border:1px dashed var(--info);display:grid;place-items:center;font-size:12px;font-weight:900;color:var(--info)}.zone.active{background:rgba(35,133,92,.13);border-color:var(--ok);color:var(--ok)}.zone.warnz{background:rgba(192,121,25,.16);border-color:var(--warn);color:var(--warn)}.speed-chip{position:absolute;top:155px;transform:translateX(-50%);background:var(--panel);border:1px solid var(--line);border-radius:999px;padding:7px 9px;font-size:12px;font-weight:900}.river-actions{display:flex;gap:10px;flex-wrap:wrap}.pill{border:1px solid var(--line);border-radius:999px;padding:9px 12px;background:var(--panel2);font-weight:800}.pill.active{background:var(--navy2);color:white;border-color:var(--navy2)}
-    .hamburg-graphic{position:relative;height:430px;border:1px solid var(--line);border-radius:22px;background:linear-gradient(180deg,var(--panel2),var(--panel));overflow:hidden}.berth-box{position:absolute;left:18px;top:18px;width:240px;background:rgba(255,255,255,.88);border:1px solid var(--line);border-radius:17px;padding:14px;box-shadow:0 8px 24px rgba(0,0,0,.08);z-index:2}[data-theme="dark"] .berth-box{background:rgba(13,34,51,.9)}.tide-svg{position:absolute;inset:0}.overlay-window{position:absolute;bottom:78px;height:28px;border-radius:999px;background:rgba(35,133,92,.18);border:2px solid var(--ok);display:grid;place-items:center;font-weight:950;color:var(--ok);font-size:12px}.block-window{position:absolute;bottom:116px;height:25px;border-radius:999px;background:rgba(179,52,52,.17);border:2px solid var(--alarm);display:grid;place-items:center;color:var(--alarm);font-weight:950;font-size:12px}.arrival{position:absolute;bottom:48px;transform:translateX(-50%);text-align:center;font-weight:950;color:var(--navy2)}.arrival:before{content:"▲";display:block;font-size:30px;line-height:.9;color:var(--navy2)}.hamburg-result{margin-top:12px;font-size:18px;font-weight:950}
-    .encounter-info{position:absolute;left:18px;top:18px;width:230px;background:rgba(255,255,255,.9);border:1px solid var(--line);border-radius:17px;padding:14px;z-index:2}[data-theme="dark"] .encounter-info{background:rgba(13,34,51,.92)}.shipA,.shipB{position:absolute;font-size:25px;font-weight:950}.shipA{top:42px;color:var(--ok)}.shipB{top:22px;color:var(--info)}.meet{position:absolute;top:37px;transform:translateX(-50%);text-align:center;color:var(--alarm);font-weight:950}.meet:before{content:"●";display:block;font-size:28px;line-height:.9}.restriction{position:absolute;top:112px;height:32px;border-radius:10px;background:rgba(179,52,52,.18);border:2px dashed var(--alarm);display:grid;place-items:center;color:var(--alarm);font-weight:950;font-size:12px}
-    .print-preview{background:white;color:#111;border-radius:10px;border:1px solid #ddd;padding:18px;margin-top:14px}.print-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;font-size:13px}.print-section{border:1px solid #ddd;border-radius:8px;padding:10px}.print-section h4{margin:0 0 8px;color:#0f3558}
-    @media(max-width:900px){.nav-row{grid-template-columns:1fr}.status{text-align:left}.checks{justify-content:flex-start}.frame-grid{grid-template-columns:1fr}.method-buttons{grid-template-columns:repeat(3,1fr)}.ship-grid,.two,.three,.five{grid-template-columns:1fr}.elbe{height:260px;overflow:auto}.station{font-size:10px}.topbar{position:static}}
-  </style>
+  <title>Elbe Passage Plan – Prototyp v0.4</title>
+  <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
-  <div id="login" class="login">
-    <div class="mark">⚓</div>
-    <section class="login-card">
-      <div class="badge">Lotsenbrüderschaft Elbe</div>
-      <h1>ELBE PASSAGE PLAN</h1>
-      <p>Passageplanung für Elbelotsen</p>
-      <div class="login-grid">
-        <label>Name des Lotsen <input id="loginName" value="Benjamin Petzold" /></label>
-        <label>Darstellung <select id="themeChoice"><option value="system">System</option><option value="light">Hell</option><option value="dark">Nacht</option></select></label>
-        <button id="loginBtn" class="primary">Anmelden</button>
-      </div>
-      <p class="small-note">Prototyp v0.3 – UX-Demonstrator, keine operative Freigabe.</p>
-    </section>
-  </div>
-
-  <main id="app" class="app" hidden>
+  <main class="app">
     <header class="topbar">
-      <div><span class="title">Elbe Passage Plan</span><small id="userBadge"></small></div>
-      <button id="themeToggle" class="ghost">Tag/Nacht</button>
+      <div><strong>Elbe Passage Plan</strong><span> · Prototyp v0.4</span></div>
+      <button id="themeToggle" class="btn secondary">Tag/Nacht</button>
     </header>
-    <div class="shell">
-      <div class="nav-row">
-        <nav id="tabs" class="tabs"></nav>
-        <aside id="status" class="status"></aside>
-      </div>
 
-      <section id="view-basic" class="view active">
-        <article class="card">
-          <h2>Grundeinstellung</h2>
-          <div class="frame-grid">
-            <div class="method-buttons" id="methodButtons">
-              <button data-method="ETA" class="active">ETA</button>
-              <button data-method="ATA">ATA</button>
-              <button data-method="ETS">ETS</button>
+    <section class="head-grid">
+      <nav class="circle-nav" aria-label="Modulnavigation">
+        <button data-view="basic" class="nav-item active" style="--a:-105deg">Grunddaten</button>
+        <button data-view="tides" class="nav-item" style="--a:-52deg">Gezeiten</button>
+        <button data-view="window" class="nav-item" style="--a:0deg">Passage</button>
+        <button data-view="route" class="nav-item" style="--a:52deg">Routen</button>
+        <button data-view="hamburg" class="nav-item" style="--a:105deg">Hamburg</button>
+        <button data-view="encounter" class="nav-item" style="--a:158deg">Begegnung</button>
+        <button data-view="print" class="nav-item" style="--a:210deg">Print</button>
+        <div class="epp-core">EPP</div>
+      </nav>
+
+      <aside class="status-panel">
+        <div class="status-place" id="statusPlace">Hamburg</div>
+        <div class="status-time" id="statusTime">16 / 14:22</div>
+        <div class="status-mode" id="statusMode">ETA</div>
+        <div class="overall ok">✓ PLANUNG OK</div>
+        <div class="status-list" id="statusList">
+          <span>✓ Tide</span><span>✓ Passage Bake C</span><span>ℹ Routenoptionen</span><span>✓ Hamburg Anlauf</span><span>✓ Begegnung</span>
+        </div>
+      </aside>
+    </section>
+
+    <section id="view-basic" class="view active">
+      <article class="panel compact">
+        <h2>Grunddaten</h2>
+        <div class="basic-grid">
+          <div class="method-col">
+            <button class="method active" data-method="ETA">ETA</button>
+            <button class="method" data-method="ATA">ATA</button>
+            <button class="method" data-method="ETS">ETS</button>
+            <button class="info-dot" id="infoDot">ⓘ</button>
+          </div>
+          <div class="mini-schema">
+            <div class="schema-label" id="schemaStart">TN Elbe</div>
+            <div class="schema-arrow">↓</div>
+            <div class="schema-label" id="schemaEnd">Hamburg</div>
+          </div>
+          <div class="time-target">
+            <label><span id="timeCaption">ETA</span><input id="planDateTime" type="datetime-local" value="2025-05-16T14:22" /></label>
+            <label id="destWrap">Ziel<select id="destination"><option>Hamburg</option><option>Bützfleth</option><option>Brunsbüttel</option><option>Cuxhaven</option></select></label>
+          </div>
+          <div class="ship-frame">
+            <h3>Schiffsdaten</h3>
+            <div class="ship-grid">
+              <label class="wide">Schiffsname<input value="MSC HAMBURG" /></label>
+              <label class="medium">Typ<select><option>Container</option><option>Übrige Schiffe</option></select></label>
+              <label>Länge<input type="number" value="399" /></label>
+              <label>Breite<input type="number" value="61" /></label>
+              <label>Tiefgang<input type="number" value="13.4" step="0.1" /></label>
+              <label>FdW<input type="number" value="17" step="0.5" /></label>
             </div>
-            <div class="info-box" id="methodInfo"></div>
-            <div class="direction-box"><div class="arrow-sketch" id="methodGraphic"></div></div>
-            <div class="side-box">
-              <label class="time-input"><span id="timeLabel">Startzeit</span><input id="planTime" value="16 / 14:22" /></label>
-              <label class="dest" id="destinationWrap">Zielort<select id="destination"></select></label>
-            </div>
           </div>
-        </article>
-        <article class="card">
-          <h2>Schiffsdaten</h2>
-          <div class="ship-grid">
-            <label>Schiffsname<input id="shipName" value="MSC HAMBURG" /></label>
-            <label>Typ<select id="shipClass"><option>Container</option><option>Übrige Schiffe</option></select></label>
-            <label>Länge m<input id="length" type="number" value="399" step="0.1" /></label>
-            <label>Breite m<input id="beam" type="number" value="61" step="0.1" /></label>
-            <label>Tiefgang m<input id="draft" type="number" value="13.4" step="0.1" /></label>
-            <label>FdW kn<input id="fdw" type="number" value="17" step="0.5" /></label>
-          </div>
-          <div id="validation" class="validation ok">✓ Schiffsdaten innerhalb der Grenzwerte</div>
-        </article>
-      </section>
+        </div>
+        <div class="tooltip" id="methodTip">ETA: Planung ab Tonne Elbe flussaufwärts zum Ziel.</div>
+      </article>
+    </section>
 
-      <section id="view-tides" class="view">
-        <article class="card">
-          <h2>Gezeiten</h2>
-          <div class="two">
-            <div>
-              <label>Datenquelle<select id="tideSource"><option>BSH</option><option selected>Manuell</option></select></label>
-            </div>
-            <div class="two">
-              <label>NW Cuxhaven (+/- dm)<select id="wlCux"></select></label>
-              <label>NW HH St. Pauli (+/- dm)<select id="wlHH"></select></label>
-            </div>
-          </div>
-          <h3>Gezeitenübersicht</h3>
-          <div class="tablewrap"><table><thead><tr><th>Bezugsort</th><th>HW_1</th><th>NW_1</th><th>HW_2</th><th>NW_2</th></tr></thead><tbody id="tideRows"></tbody></table></div>
-          <div class="validation ok" id="tideStatus">✓ Gezeiten vollständig</div>
-        </article>
-      </section>
+    <section id="view-tides" class="view">
+      <article class="panel compact">
+        <div class="panel-head"><h2>Gezeiten</h2><div><button class="toggle active">Manuell</button><button class="toggle">BSH</button></div></div>
+        <div class="tide-line"><span>HEL</span><i></i><span>CUX</span><i></i><span>BRB</span><i></i><span>GLÜ</span><i></i><span>HH</span></div>
+        <div class="tide-cards" id="tideCards"></div>
+      </article>
+    </section>
 
-      <section id="view-window" class="view">
-        <article class="card passage-card" id="passageCard"></article>
-      </section>
+    <section id="view-window" class="view">
+      <article class="panel passage-panel">
+        <h2>Passagefenster Bake C</h2>
+        <p class="muted">Tfg korr.: 13,4 m</p>
+        <div class="passage-track"><span class="start">16 / 12:30</span><div class="track"></div><div class="marker" style="left:58%">16 / 14:22</div><span class="end">16 / 15:20</span></div>
+        <strong class="ok-line">✓ Passage innerhalb Passagefenster</strong>
+      </article>
+    </section>
 
-      <section id="view-route" class="view">
-        <article class="card river-card">
-          <h2>Routenoptionen</h2>
-          <div class="two">
-            <label><input id="speedLimit" type="checkbox" checked /> Elbe Speed Limit aktiv</label>
-            <div class="validation info" id="baseSpeed">Basiswert: 12,0 kn (Elbe Speed Limit)</div>
-          </div>
-          <div class="river-actions" style="margin-top:14px">
-            <button class="pill active" data-level="1">Ebene 1</button>
-            <button class="pill" data-level="2">Ebene 2</button>
-          </div>
-          <div id="routeElbe" class="elbe"></div>
-          <div class="small-note">Bereiche anklicken: FdW wird vorbelegt, Zeitkorrektur nur wo fachlich zulässig. Grafische Feinabstimmung folgt im nächsten Prototyp.</div>
-        </article>
-      </section>
+    <section id="view-route" class="view">
+      <article class="panel">
+        <h2>Routenoptionen</h2>
+        <div class="route-area">
+          <button class="speed-limit">Elbe Speed Limit</button>
+          <div class="option-row upper"><button>TN Elbe–KuBa</button><button class="changed">KuBa–Brb57<br><small>11,0 kn · +10 min</small></button><button class="changed">Brb59–HaLo<br><small>10,5 kn · +15 min</small></button></div>
+          <div id="routeMaster" class="master-elbe"></div>
+          <div class="option-row lower"><button>Cuxhaven</button><button class="changed">Lotsenwechsel<br><small>+10 min</small></button><button>DOW</button><button>Wedel</button><button>Delegation</button></div>
+        </div>
+        <p class="muted">Alle Bereiche sind Buttons. Klick öffnet in der späteren Version einen Drawer rechts.</p>
+      </article>
+    </section>
 
-      <section id="view-hamburg" class="view">
-        <article class="card">
-          <h2>Hamburg Anlaufbedingungen</h2>
-          <div class="hamburg-graphic" id="hamburgGraphic">
-            <div class="berth-box">
-              <label>Liegeplatz<select id="berth"></select></label>
-              <p><strong>TJZ am Liegeplatz</strong><br><span id="tjz">13,3 m</span></p>
-              <p><strong>Tfg korr.</strong><br><span id="corrDraft">13,4 m</span></p>
-            </div>
-            <svg class="tide-svg" viewBox="0 0 1000 420" preserveAspectRatio="none">
-              <path d="M 40 245 C 160 50, 260 50, 380 245 S 620 440, 740 245 S 900 50, 980 130" fill="none" stroke="currentColor" stroke-width="5" opacity=".75"/>
-              <text x="170" y="70" font-size="26" font-weight="900">HW</text><text x="500" y="355" font-size="26" font-weight="900">NW</text><text x="825" y="92" font-size="26" font-weight="900">HW</text>
-            </svg>
-            <div class="overlay-window" style="left:43%;width:26%">TJZ-Fenster</div>
-            <div class="block-window" style="left:27%;width:16%">Sperrzeit</div>
-            <div class="arrival" style="left:58%">16 / 14:22</div>
+    <section id="view-hamburg" class="view">
+      <article class="panel">
+        <h2>Hamburg Anlaufbedingungen</h2>
+        <div class="hamburg-grid">
+          <div class="berth-box"><label>Liegeplatz<select><option>Bukai 1 (CTB)</option><option>Tollerort</option><option>Altenwerder</option></select></label><p><b>TJZ am Liegeplatz</b><br>13,8 m</p><p><b>Tfg korr.</b><br>13,4 m</p></div>
+          <div class="window-graphic">
+            <svg viewBox="0 0 1000 300" preserveAspectRatio="none"><path d="M 30 160 C 170 15, 290 20, 430 160 S 690 300, 830 160 S 950 45, 990 90" /></svg>
+            <div class="hw a">HW<br><small>04:12</small></div><div class="nw">NW<br><small>10:28</small></div><div class="hw b">HW<br><small>16:40</small></div>
+            <div class="win tjz">TJZ-Fenster</div><div class="win block">Sperrzeit</div><div class="arrival">▲<br>16 / 14:22</div>
           </div>
-          <div class="hamburg-result ok" id="hamburgResult">✓ Anlaufbedingungen erfüllt</div>
-        </article>
-      </section>
+        </div>
+        <div class="condition-frame"><h3>Bedingungen und Hinweise</h3><p><span class="ok">✓</span> TJZ erfüllt · Verfügbarer Wasserstand ausreichend.</p><p><span class="alarm">✕</span> Sperrzeit · Beispieltext aus Berechnung.</p><p><span class="info">ℹ</span> Liegeplatzhinweis · Nachtanlauf zulässig.</p></div>
+      </article>
+    </section>
 
-      <section id="view-encounter" class="view">
-        <article class="card river-card">
-          <h2>Begegnung</h2>
-          <div class="five">
-            <label>Name Schiff B<input id="bName" value="EVER GIVEN" /></label>
-            <label>Länge m<input id="bLength" type="number" value="300" /></label>
-            <label>Breite m<input id="bBeam" type="number" value="42" /></label>
-            <label>FdW kn<input id="bFdw" type="number" value="12" /></label>
-            <label>Abfahrt HaLo<input id="bStart" value="16 / 12:20" /></label>
-          </div>
-          <div id="encounterElbe" class="elbe" style="height:260px"></div>
-          <div id="encounterResult" class="validation ok">✓ Begegnung zulässig</div>
-        </article>
-      </section>
+    <section id="view-encounter" class="view">
+      <article class="panel">
+        <h2>Begegnung</h2>
+        <div class="encounter-grid">
+          <div class="opponent"><h3>Gegenschiff</h3><label>Name<input value="EVER GIVEN" /></label><label>ETS<input value="16 / 12:20" /></label><div class="two-cols"><label>Länge<input value="300" /></label><label>Breite<input value="42" /></label></div><label>FdW<input value="16" /></label></div>
+          <div class="encounter-map"><div id="encounterElbe" class="master-elbe split"></div><div class="restricted">Altenbrucher Bogen · 103 m</div></div>
+        </div>
+        <div class="warning-frame">🚨 Begegnungsverbot möglich: addierte Breite 103,0 m</div>
+      </article>
+    </section>
 
-      <section id="view-print" class="view">
-        <article class="card">
-          <h2>Print-out</h2>
-          <p>Vollständiger Report als spätere PDF-Dokumentation. Vorschau noch schematisch.</p>
-          <button id="printBtn" class="primary">Drucken / PDF</button>
-          <div class="print-preview" id="printPreview"></div>
-        </article>
-      </section>
-    </div>
+    <section id="view-print" class="view">
+      <article class="panel"><h2>Print-out</h2><p>Excel-Layout bleibt vorläufig bestehen.</p><button class="btn primary">Drucken / PDF</button></article>
+    </section>
   </main>
-
-  <script>
-    const $ = (s)=>document.querySelector(s); const $$=(s)=>[...document.querySelectorAll(s)];
-    const state={method:'ETA',destination:'Hamburg',theme:'light',routeAdjusted:true,encounter:true,berth:'Bukai 1 (CTB)',level:1};
-    const modules=[['basic','Grundeinstellung'],['tides','Gezeiten'],['window','Passagefenster'],['route','Routenoptionen'],['hamburg','Hamburg Anlaufbedingungen'],['encounter','Begegnung'],['print','Print-out']];
-    const stations=[['TN Elbe',4],['KuBa',18],['Glameyer',31],['Brb(TN57)',43],['Brb(TN59)',54],['DOW(TN99)',65],['TN117',77],['TN125',87],['HaLo',96]];
-    const berths=[['Bukai 1 (CTB)',13.3],['Bukai 2 (CTB)',13.3],['Predöhl 1',13.3],['CTT 4',13.3],['Köhlfleet Süd',8.7],['Norderwerft Pl 1',6.4],['Steinwerder 1',11.6]];
-    const info={
-      ETA:['ETA Tonne Elbe','Die angegebene Zeit bezieht sich auf die Ankunft an der Tonne Elbe. Es wird die Passage flussaufwärts bis zum gewählten Zielort berechnet.','TN Elbe\n   │\n   ▼\n Ziel'],
-      ATA:['ATA Hamburg HaLo','Ankunftszeit in Hamburg HaLo. Es wird rückwärts berechnet, wann das Schiff an der Tonne Elbe sein müsste.','TN Elbe\n   ▲\n   │\n Hamburg'],
-      ETS:['ETS Hamburg HaLo','Die angegebene Zeit bezieht sich auf die Abfahrt in Hamburg HaLo. Es wird die Passage flussabwärts bis zum gewählten Zielort berechnet.','Hamburg\n   │\n   ▼\n Ziel']
-    };
-    const tideRows=[['HEL','16 / 00:42','—','16 / 13:10','—'],['CUX','16 / 01:14','16 / 07:31','16 / 13:46','16 / 19:58'],['BRB','16 / 02:08','—','16 / 14:32','—'],['GLÜCK','16 / 03:02','—','16 / 15:27','—'],['HH','16 / 04:12','16 / 10:28','16 / 16:40','16 / 22:51']];
-    function setTheme(t){ if(t==='system') t=matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light'; document.documentElement.dataset.theme=t; state.theme=t; }
-    function visibleModules(){let arr=['basic','tides','window','route','print']; if((state.method==='ETA'&&state.destination==='Hamburg')||state.method==='ATA') arr.splice(4,0,'hamburg'); if(state.method==='ETA'&&state.destination==='Hamburg') arr.splice(arr.indexOf('print'),0,'encounter'); return arr;}
-    function renderTabs(){const vis=visibleModules(); $('#tabs').innerHTML=modules.map(([id,name])=>`<button class="tab ${vis.includes(id)?'':'hidden'} ${$('.view.active')?.id===`view-${id}`?'active':''}" data-view="${id}"><span class="s">${id==='route'&&state.routeAdjusted?'ℹ':id==='window'?'✓':'✓'}</span>${name}</button>`).join(''); $$('.tab').forEach(b=>b.onclick=()=>show(b.dataset.view));}
-    function show(id){$$('.view').forEach(v=>v.classList.toggle('active',v.id===`view-${id}`)); renderTabs();}
-    function renderBasic(){ const [title,text,g]=info[state.method]; $('#methodInfo').innerHTML=`<div><strong>${title}</strong><br>${text}</div>`; $('#methodGraphic').textContent=g; $('#timeLabel').textContent=state.method; const opts=state.method==='ETA'?['Hamburg','Bützfleth','Brunsbüttel','Cuxhaven']:state.method==='ETS'?['Tonne Elbe','Cuxhaven','Brunsbüttel','Bützfleth']:['Tonne Elbe']; $('#destination').innerHTML=opts.map(o=>`<option ${o===state.destination?'selected':''}>${o}</option>`).join(''); $('#destinationWrap').style.visibility=state.method==='ATA'?'hidden':'visible'; if(!opts.includes(state.destination)) state.destination=opts[0];}
-    function renderStatus(){const target=state.method==='ATA'?'Tonne Elbe':state.destination; const mode=state.method; let checks=['<span class="chip ok">✓ Tide</span>']; if(state.method==='ETS') checks.push('<span class="chip ok">✓ Passage Seemanshöft</span>'); else checks.push('<span class="chip ok">✓ Passage Bake C</span>'); if((state.method==='ETA'&&state.destination==='Hamburg')||state.method==='ATA') checks.push('<span class="chip ok">✓ Hamburg Anlauf</span>'); if(state.method==='ETA'&&state.destination==='Hamburg') checks.push('<span class="chip ok">✓ Begegnung</span>'); if(state.routeAdjusted) checks.push('<span class="chip info">ℹ Routenoptionen angepasst</span>'); $('#status').innerHTML=`<div class="place">${target}</div><div class="time">16 / 14:22</div><div class="mode">${mode}</div><div class="overall ok">✓ PLANUNG OK</div><div class="checks">${checks.join('')}</div>`;}
-    function renderTides(){ for(let i=-25;i<=5;i+=5){$('#wlCux').insertAdjacentHTML('beforeend',`<option ${i===0?'selected':''}>${i} dm</option>`); $('#wlHH').insertAdjacentHTML('beforeend',`<option ${i===0?'selected':''}>${i} dm</option>`);} $('#tideRows').innerHTML=tideRows.map(r=>`<tr>${r.map(c=>`<td>${c}</td>`).join('')}</tr>`).join('');}
-    function renderPassage(){ const name=state.method==='ETS'?'Seemanshöft':'Bake C'; $('#passageCard').innerHTML=`<div class="passage-title">Passagefenster ${name}</div><div class="passage-sub">Tfg korr.: 13,4 m</div><div class="timeline"><div class="bar"></div><div class="tick start">16 / 12:30</div><div class="tick end">16 / 15:20</div><div class="eta-marker" style="left:58%">16 / 14:22</div></div><div class="passage-status ok">✓ Passage innerhalb Passagefenster</div>`;}
-    function elbeBase(container, extras=''){ container.innerHTML=`<div class="elbe-line"></div>${stations.map(([n,x])=>`<div class="station" style="left:${x}%">${n}</div>`).join('')}<div class="pilot-change" style="left:48.5%">LOTSEN-<br>WECHSEL</div>${extras}`;}
-    function renderRoute(){ const zones1=`<div class="zone active" style="left:5%;width:13%">TN Elbe–KuBa<br>12,0 kn</div><div class="zone warnz" style="left:18%;width:25%">KuBa–Brb(TN57)<br>11,0 kn · +10 min</div><div class="zone active" style="left:54%;width:42%">Brb(TN59)–HaLo<br>10,5 kn · +15 min</div>`; const zones2=`<div class="zone active" style="left:18%;width:13%">Cuxhaven<br>12,0 kn</div><div class="zone warnz" style="left:43%;width:11%">Lotsenwechsel<br>+10 min</div><div class="zone active" style="left:65%;width:8%">DOW</div><div class="zone active" style="left:79%;width:8%">Wedel</div><div class="zone active" style="left:87%;width:9%">Delegation</div>`; elbeBase($('#routeElbe'), state.level==1?zones1:zones2); $('#baseSpeed').textContent=$('#speedLimit').checked?'Basiswert: 12,0 kn (Elbe Speed Limit)':'Basiswert: '+Number($('#fdw').value).toFixed(1).replace('.',',')+' kn (FdW Schiff)';}
-    function renderHamburg(){ $('#berth').innerHTML=berths.map(([n,t])=>`<option value="${t}" ${n===state.berth?'selected':''}>${n}</option>`).join(''); $('#tjz').textContent=Number($('#berth').value).toFixed(1).replace('.',',')+' m'; $('#corrDraft').textContent=(Number($('#draft').value)+0).toFixed(1).replace('.',',')+' m';}
-    function renderEncounter(){ const restriction='<div class="restriction" style="left:25%;width:18%">Altenbrucher Bogen · 103 m</div><div class="meet" style="left:38%">14:22</div><div class="shipA" style="left:24%">A →</div><div class="shipB" style="left:49%">← B</div>'; elbeBase($('#encounterElbe'), restriction); const width=Number($('#beam').value)+Number($('#bBeam').value); $('#encounterResult').className='validation '+(width>90?'alarm':'ok'); $('#encounterResult').textContent=width>90?'🚨 Begegnungsverbot möglich: addierte Breite '+width.toFixed(1).replace('.',',')+' m':'✓ Begegnung zulässig';}
-    function renderPrint(){ $('#printPreview').innerHTML=`<h3>ELBE PASSAGE PLAN</h3><div class="print-grid"><div class="print-section"><h4>Status</h4><p>Hamburg · 16 / 14:22<br>✓ Planung OK</p></div><div class="print-section"><h4>Schiff</h4><p>${$('#shipName').value}<br>${$('#length').value} x ${$('#beam').value} m · Tfg ${$('#draft').value} m · FdW ${$('#fdw').value} kn</p></div><div class="print-section"><h4>Routenoptionen</h4><p>Elbe Speed Limit: ${$('#speedLimit').checked?'aktiv':'inaktiv'}<br>KuBa–Brb +10 min<br>Brb–HaLo +15 min</p></div><div class="print-section"><h4>Passagefenster</h4><p>Bake C: 16 / 12:30 – 16 / 15:20<br>Passage: 16 / 14:22</p></div></div>`;}
-    function validate(){ let errs=[]; const cls=$('#shipClass').value; if(+$('#length').value>(cls==='Container'?400:370)) errs.push('Länge überschritten'); if(+$('#beam').value>(cls==='Container'?62.5:63)) errs.push('Breite überschritten'); if(+$('#draft').value>15.6) errs.push('Tiefgang überschritten'); if(+$('#fdw').value<6||+$('#fdw').value>25) errs.push('FdW außerhalb 6–25 kn'); $('#validation').className='validation '+(errs.length?'alarm':'ok'); $('#validation').textContent=errs.length?'🚨 '+errs.join(' · '):'✓ Schiffsdaten innerhalb der Grenzwerte';}
-    function update(){renderBasic(); renderTabs(); renderStatus(); renderPassage(); renderRoute(); renderHamburg(); renderEncounter(); renderPrint(); validate();}
-    $('#loginBtn').onclick=()=>{ $('#login').hidden=true; $('#app').hidden=false; $('#userBadge').textContent=' · '+$('#loginName').value; setTheme($('#themeChoice').value); update(); };
-    $('#themeToggle').onclick=()=>setTheme(document.documentElement.dataset.theme==='dark'?'light':'dark');
-    $('#methodButtons').onclick=(e)=>{ if(e.target.dataset.method){ state.method=e.target.dataset.method; $$('#methodButtons button').forEach(b=>b.classList.toggle('active',b.dataset.method===state.method)); if(state.method==='ATA') state.destination='Tonne Elbe'; if(state.method==='ETS') state.destination='Tonne Elbe'; if(state.method==='ETA') state.destination='Hamburg'; update(); }};
-    $('#destination').onchange=e=>{state.destination=e.target.value; update();};
-    $$('input,select').forEach(el=>el.addEventListener('input',update));
-    document.addEventListener('click',e=>{ if(e.target.dataset.level){state.level=Number(e.target.dataset.level); $$('.pill[data-level]').forEach(b=>b.classList.toggle('active',Number(b.dataset.level)===state.level)); renderRoute();} });
-    $('#berth').addEventListener('change',e=>{state.berth=e.target.selectedOptions[0].textContent; update();});
-    $('#printBtn').onclick=()=>window.print();
-    renderTides(); update();
-  </script>
+  <script src="app.js"></script>
 </body>
 </html>
