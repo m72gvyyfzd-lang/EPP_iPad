@@ -5,6 +5,7 @@ Statischer iPad-first Web-App-Prototyp für GitHub Pages.
 ## Enthalten
 
 - Kreisnavigation mit EPP im Zentrum
+- Tag/Nacht-Theme-Umschalter
 - Instrumenten-Statuspanel
 - Grunddaten mit integrierten Schiffsdaten
 - Gezeitenkarten für HEL, CUX, BRB, GLÜ, HH
